@@ -28,9 +28,11 @@ public class SecurityConfig {
 //    }
 
     private final SecurityService securityService;
+    private final AuthSuccessHandler authSuccessHandler;
 
-    public SecurityConfig(SecurityService securityService) {
+    public SecurityConfig(SecurityService securityService, AuthSuccessHandler authSuccessHandler) {
         this.securityService = securityService;
+        this.authSuccessHandler = authSuccessHandler;
     }
 
 
@@ -57,7 +59,8 @@ public class SecurityConfig {
 //                .httpBasic()
                 .formLogin()
                     .loginPage("/login")
-                    .defaultSuccessUrl("/welcome")
+//                    .defaultSuccessUrl("/welcome")
+                    .successHandler(authSuccessHandler)
                     .failureUrl("/login?error=true")
                     .permitAll()
                 .and()
