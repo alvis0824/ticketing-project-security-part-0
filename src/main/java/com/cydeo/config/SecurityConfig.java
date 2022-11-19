@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-@Configuration
+@Configuration  // includes @Component
 public class SecurityConfig {
 
 //    @Bean
@@ -56,7 +56,7 @@ public class SecurityConfig {
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and()
-//                .httpBasic()
+//                .httpBasic()   --- use the default browser login page
                 .formLogin()
                     .loginPage("/login")
 //                    .defaultSuccessUrl("/welcome")
