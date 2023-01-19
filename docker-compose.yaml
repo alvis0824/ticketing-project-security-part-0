@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+  mypostgres:
+    image: postgres
+    container_name: mypostgres
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "admin"
+      POSTGRES_DB: "ticketing-app"
+    ports:
+      - "5435:5432"
+    restart: always
+    volumes:
+      - initdb:/var/lib/postgresql/data
+    networks:
+      - webnet
+  ticketing-app:
+    build: .    #try to find a docker file in root folder and build it for me
+    container_name: ticketingapp
+    ports:
+      - "8080:8080"
+    networks:
+      - webnet
+    depends_on:
+      - mypostgres   # ticket app depends on postgres
+networks:
+  webnet:
+    driver: bridge
+volumes:
+  initdb:
+
+
+#if we need docker compose, it means we are dealing with microservices. microservices are making life easier.
+
+
