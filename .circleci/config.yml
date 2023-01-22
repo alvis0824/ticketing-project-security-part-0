@@ -8,27 +8,34 @@ jobs:
     steps:
       - checkout
       - run: mkdir -p /tmp/workspace
+      # create /tmp/workspace folder, and -p means it is parent folder
       # Download and cache dependencies
       - restore_cache:
+      # caching makes it faster, if already created, it will get the cache if no changes are made
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
       - run: mvn clean install -DskipTests
+      # if there is no tests we put  -DskipTests command, if there are unit tests then no need
       - save_cache:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
+      # copy pom.xml and paste it to m2 folder
       - persist_to_workspace:
           root: /tmp/workspace
+      # defining root folder, create all folder in this structure, under this folder
           paths: .
   docker-image-and-publish:
     machine: true
+#   means we will put this image in another computer, so machine is true
     steps:
       - attach_workspace:
           at: /tmp/workspace
       - run: ls -a /tmp/workspace
+#   this is debugging purpose
       - run:
           name: Create Docker image and push to ECR
           command: aws ecr get-login-password --region ca-central-1 | docker login --username AWS --password-stdin 174408483640.dkr.ecr.ca-central-1.amazonaws.com && docker build -t ticketingapp /tmp/workspace && docker tag ticketingapp:latest 174408483640.dkr.ecr.ca-central-1.amazonaws.com/ticketingapp:latest && docker push 174408483640.dkr.ecr.ca-central-1.amazonaws.com/ticketingapp:latest
